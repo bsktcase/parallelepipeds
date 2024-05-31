@@ -5,6 +5,10 @@ import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 export class EducationDataClient {
     private api: AxiosInstance;
 
+    // this is the UnitId for UW-Seattle; if UW ceases to exist I'm confident I'd know about it
+    // we'll use this to limit the data returned by year-checking until we find a better option
+    public knownGoodUnitId: '236948';
+
     constructor(baseURL: string = 'https://educationdata.urban.org/api/v1/college-university/') {
         this.api = axios.create({
             baseURL: baseURL,
