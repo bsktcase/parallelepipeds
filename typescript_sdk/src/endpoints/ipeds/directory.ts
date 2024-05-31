@@ -6,19 +6,11 @@ export class Directory {
     private client: EducationDataClient;
     private baseURL: string;
     private year: number;
-    private institutionalCategory: number; // inst_category
-    private offeringUndergraduate: number; // offering_undergrad
-    private distanceOnly: number; // dist_progs_all
-    private sectors: string; // sector
 
     constructor(client: EducationDataClient, baseURL: string = 'ipeds/directory', year: number = new Date().getFullYear() - 2) {
         this.client = client;
         this.baseURL = baseURL;
         this.year = year;
-        this.institutionalCategory = 2;
-        this.offeringUndergraduate = 1;
-        this.distanceOnly = 0;
-        this.sectors = '1,2';
     }
 
     setYear(year: number) {
@@ -31,6 +23,8 @@ export class Directory {
 
     // this is a heinously inefficient way to get this info from them, but I don't see a better option on their API
     // we're trying to limit the damage by querying for a known unitid instead of all 6200 institutions
+    // i really thought their summaries requests would work for this but summaries URLs are all broken 502 atm,
+    // even their own docs' examples
     async checkYear(year: number): Promise<boolean> {
         try {
             this.setYear(year);
@@ -69,12 +63,12 @@ export class Directory {
     }
 
     async getDirectoryById(id: string): Promise<any> {
-        const params = { year: this.year, unitid: id, inst_category: this.institutionalCategory, offering_undergrad: this.offeringUndergraduate, dist_progs_all: this.distanceOnly, sector: this.sectors };
+        const params = { year: this.year, unitid: id };
         return this.getDirectory(params);
     }
 
     async getDirectoryByState(fipsStateCode: number): Promise<any> {
-        const params = { year: this.year, fips: fipsStateCode, inst_category: this.institutionalCategory, offering_undergrad: this.offeringUndergraduate, dist_progs_all: this.distanceOnly, sector: this.sectors };
+        const params = { year: this.year, fips: fipsStateCode };
         // console.log(params);
         return this.getDirectory(params);
     }
